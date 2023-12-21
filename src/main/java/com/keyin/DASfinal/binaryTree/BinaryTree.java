@@ -1,15 +1,20 @@
 package com.keyin.DASfinal.binaryTree;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class BinaryTree {
+@Entity
+public class BinaryTree extends Node {
 
-    Node root;
+    @Id
+    @SequenceGenerator(name = "tree_sequence", sequenceName = "tree_sequence",allocationSize = 1,initialValue = 1)
+    @GeneratedValue(generator = "tree_sequence")
+    private long id;
 
-    public BinaryTree() {
-        root = null;
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    private Node root;
 
     public void insert(int value) {
         root = insertRec(root, value);
