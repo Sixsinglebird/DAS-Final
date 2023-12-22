@@ -1,8 +1,7 @@
-package com.keyin.DASfinal.binaryTree;
+package com.keyin.DASfinal.node;
 
 
 import jakarta.persistence.*;
-import org.springframework.stereotype.Repository;
 
 @Entity
 public class Node {
@@ -12,7 +11,7 @@ public class Node {
     @GeneratedValue(generator = "node_sequence")
     private long id;
 
-    int value;
+    private int value;
 
     @OneToOne(cascade = CascadeType.ALL)
     Node left;
@@ -26,8 +25,8 @@ public class Node {
         left = null;
     }
 
-    public Node (int value) {
-        this.value = value;
+    public Node (String val) {
+        value = Integer.parseInt(val);
         right = null;
         left = null;
     }
@@ -36,8 +35,9 @@ public class Node {
         return value;
     }
 
-    public void setValue(int value) {
-        this.value = value;
+    public void setValue(String value) {
+
+        this.value = Integer.parseInt(value);
     }
 
     public Node getLeft() {

@@ -1,9 +1,11 @@
 package com.keyin.DASfinal.binaryTree;
 
+import com.keyin.DASfinal.node.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class BTController {
@@ -19,6 +21,7 @@ public class BTController {
             bt.insert(Integer.parseInt(value));
         }
         BTRepository.save(bt);
+
     }
 
     @GetMapping("/tree")
@@ -29,5 +32,10 @@ public class BTController {
     @GetMapping("/traverse")
     public List<Integer> inorder() {
         return bt.traverse();
+    }
+
+    @GetMapping("/tree/{id}")
+    public Optional<BinaryTree> getTree(@PathVariable Long id) {
+        return BTRepository.findById(id);
     }
 }
