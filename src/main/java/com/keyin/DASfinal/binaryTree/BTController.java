@@ -1,43 +1,57 @@
 package com.keyin.DASfinal.binaryTree;
 
+import com.keyin.DASfinal.node.Node;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class BTController {
 
-    private final BinaryTree bt = new BinaryTree();
+    @Autowired
+    private BinaryTreeRepository BTRepository;
 
-    @PostMapping("/insert")
-    public void insert(@RequestParam int value) {
-        bt.insert(value);
-    }
+    private BinaryTree bt;
 
     @PostMapping("/process-numbers")
     public void insertValues(@RequestBody List<String> values) {
+        bt = new BinaryTree();
         for (String value : values) {
             bt.insert(Integer.parseInt(value));
         }
-    }
+        BTRepository.save(bt);
 
-    @GetMapping("/search/{value}")
-    public Node search(@PathVariable int value) {
-        return bt.search(value);
-    }
-
-    @DeleteMapping("/delete/{value}")
-    public void delete(@PathVariable int value) {
-        bt.delete(value);
     }
 
     @GetMapping("/tree")
     public Node viewTree() {
+        if (bt == null) {
+            return new Node();
+        }
         return bt.getRoot();
     }
+
+    @PostMapping("/orderTree")
+    public void orderTree(@RequestBody List<String> values) {
+        Collections.sort(values);
+        bt = new BinaryTree();
+        for (String value : values) {
+            bt.insert(Integer.parseInt(value));
+        }
+        BTRepository.save(bt);
+    }
+
 
     @GetMapping("/traverse")
     public List<Integer> inorder() {
         return bt.traverse();
+    }
+
+    @GetMapping("/tree/{id}")
+    public Optional<BinaryTree> getTree(@PathVariable Long id) {
+        return BTRepository.findById(id);
     }
 }

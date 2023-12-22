@@ -1,83 +1,55 @@
 package com.keyin.DASfinal.binaryTree;
 
+import com.keyin.DASfinal.node.Node;
+import com.keyin.DASfinal.nodeList.NodeList;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class BinaryTree {
 
-    Node root;
+    @Id
+    @SequenceGenerator(name = "tree_sequence", sequenceName = "tree_sequence",allocationSize = 1,initialValue = 1)
+    @GeneratedValue(generator = "tree_sequence")
+    private long id;
+
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Node root;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private NodeList nodes = new NodeList();
 
     public BinaryTree() {
         root = null;
+        nodes = new NodeList();
     }
+
 
     public void insert(int value) {
         root = insertRec(root, value);
     }
 
-
     Node insertRec(Node root, int value) {
+        Node node = new Node(String.valueOf(value));
+        nodes.insertValue(node);
+
         if (root == null) {
-            root = new Node(value);
+            root = new Node(String.valueOf(value));
             return root;
         }
 
-        if (value < root.value)
-            root.left = insertRec(root.left, value);
-        else if (value > root.value)
-            root.right = insertRec(root.right, value);
+        // lesser value goes to the left, greater value goes to the right
+        if (value < Integer.parseInt(String.valueOf(root.getValue()))) {
+            root.setLeft(insertRec(root.getLeft(), value));
 
-        return root;
-    }
-
-    // Search operation
-    public Node search(int value) {
-        return searchRec(root, value);
-    }
-
-    private Node searchRec(Node root, int value) {
-        if (root == null || root.value == value)
-            return root;
-
-        if (root.value > value)
-            return searchRec(root.left, value);
-
-        return searchRec(root.right, value);
-    }
-
-    // Delete operation
-    public void delete(int value) {
-        root = deleteRec(root, value);
-    }
-
-    private Node deleteRec(Node root, int value) {
-        if (root == null) return root;
-
-        if (value < root.value)
-            root.left = deleteRec(root.left, value);
-        else if (value > root.value)
-            root.right = deleteRec(root.right, value);
-        else {
-            if (root.left == null)
-                return root.right;
-            else if (root.right == null)
-                return root.left;
-
-            root.value = minValue(root.right);
-
-            root.right = deleteRec(root.right, root.value);
+        }else if (value > Integer.parseInt(String.valueOf(root.getValue()))) {
+            root.setRight(insertRec(root.getRight(), value));
         }
 
         return root;
-    }
-
-    private int minValue(Node root) {
-        int minv = root.value;
-        while (root.left != null) {
-            minv = root.left.value;
-            root = root.left;
-        }
-        return minv;
     }
 
 
@@ -90,9 +62,10 @@ public class BinaryTree {
 
     private void traverseRec(Node root, List<Integer> result) {
         if (root != null) {
-            result.add(root.value);
-            traverseRec(root.left, result);
-            traverseRec(root.right, result);
+            result.add(root.getValue());
+
+            traverseRec(root.getLeft(), result);
+            traverseRec(root.getRight(), result);
         }
     }
 
@@ -100,4 +73,23 @@ public class BinaryTree {
         return root;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setRoot(Node root) {
+        this.root = root;
+    }
+
+    public NodeList getValues() {
+        return nodes;
+    }
+
+    public void setValues(NodeList nodes) {
+        this.nodes = nodes;
+    }
 }
