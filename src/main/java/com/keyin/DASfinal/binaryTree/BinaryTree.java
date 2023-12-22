@@ -41,7 +41,7 @@ public class BinaryTree {
             return root;
         }
 
-
+        // lesser value goes to the left, greater value goes to the right
         if (value < Integer.parseInt(String.valueOf(root.getValue()))) {
             root.setLeft(insertRec(root.getLeft(), value));
 
@@ -62,7 +62,7 @@ public class BinaryTree {
 
     private void traverseRec(Node root, List<Integer> result) {
         if (root != null) {
-            result.add(Integer.parseInt(String.valueOf(root.getValue())));
+            result.add(root.getValue());
 
             traverseRec(root.getLeft(), result);
             traverseRec(root.getRight(), result);
